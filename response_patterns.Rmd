@@ -1,0 +1,409 @@
+---
+title: "Classification Diagnositics and Observed Response Patterns"
+subtitle: 'Labs created by Adam Garber and Dina Arch'
+author: "YOUR NAME HERE"
+date: "Updated: `r format(Sys.time(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+    theme: flatly
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      warning = FALSE,
+                      message = FALSE) #Here, I have made it so that when you knit your .rmd, warnings and messages will not show up in the html markdown. 
+```
+
+`University of California, Santa Barbara`
+
+------------------------------------------------------------------------
+
+Load packages
+
+```{r, cache = FALSE}
+library(tidyverse)
+library(haven)
+library(glue)
+library(MplusAutomation)
+library(here)
+library(janitor)
+library(gt)
+library(cowplot)
+library(poLCA)
+library(boot)
+here::i_am("response_patterns.Rmd")
+```
+
+------------------------------------------------------------------------
+
+## Example: Undergraduate Cheating behavior
+
+------------------------------------------------------------------------
+
+"Dichotomous self-report responses by 319 undergraduates to four questions about cheating behavior" (poLCA, 2016).
+
+*Data source*: This example utilizes a dataset on undergraduate *Cheating* available from the `poLCA` package (Dayton, 1998): [See documentation here](https://cran.r-project.org/web/packages/poLCA/poLCA.pdf)
+
+------------------------------------------------------------------------
+
+```{r, echo=FALSE, eval=TRUE, out.width = "50%", out.height= "50%", fig.pos="h", fig.align='center'}
+
+knitr::include_graphics(here("figures", "LCA_Diagram.png"))
+```
+
+------------------------------------------------------------------------
+
+```{r, echo=FALSE, eval=TRUE}
+
+tribble(
+   ~"Name",      ~"Label",  ~"Values",                                   
+#--------------|--------------------------------|-----|,
+  "LieExam",   "lied to avoid taking an exam"                   ,  "0 = No, 1 = Yes",
+  "LiePaper",  "lied to avoid handing a term paper in on time",  "0 = No, 1 = Yes",
+  "Fraud", "purchased a term paper to hand in as their own or had obtained a copy of an exam prior to taking the exam"     ,  "0 = No, 1 = Yes",
+  "CopyExam",   "copied answers during an exam from someone sitting near to them ",  "0 = No, 1 = Yes") %>% 
+  gt() %>% 
+  tab_header(
+    title = "LCA indicators"  # Add a title
+  ) %>%
+  tab_options(
+    table.width = pct(80)
+  ) %>%
+  tab_footnote(
+    footnote = "Undergraduate Cheating Behavior",
+    location = cells_title())
+
+```
+
+------------------------------------------------------------------------
+
+### Prepare Data
+
+```{r, eval=TRUE}
+
+data(cheating)
+
+df_cheat <-  cheating %>% 
+  clean_names() %>% 
+  dplyr::select(1:4) %>%                                   
+  dplyr::mutate_all(list(~.-1)) # Subtracts one from all variables (so that 0=No and 1=Yes)                     
+
+```
+
+------------------------------------------------------------------------
+
+### Descriptive Statistics
+
+```{r}
+ds <- df_cheat %>% 
+  pivot_longer(lieexam:copyexam, names_to = "variable") %>% 
+  group_by(variable) %>% 
+  summarise(prop = sum(value)/n(),
+            n = n()) %>%
+  arrange(desc(prop))
+
+ds %>% 
+  gt () %>% 
+  tab_header(title = md("**Descriptive Summary**")) %>%
+  cols_label(
+    variable = "Variable",
+    n = md("*N*"),
+    prop = md("Proportion Endorsed")
+  ) %>%
+  fmt_number(c(2),
+             decimals = 2) %>% 
+  cols_align(
+    align = "center",
+    columns = prop
+  ) 
+```
+
+------------------------------------------------------------------------
+
+### Exploring Observed Response Patterns
+
+Save response frequencies for the 2-class model from the previous lab with `response is _____.dat` under `SAVEDATA.`
+
+```{r, eval=FALSE}
+
+patterns  <- mplusObject(
+  
+  TITLE = "C2 LCA - Save response patterns", 
+  
+  VARIABLE = 
+  "categorical = lieexam-copyexam; 
+   usevar =  lieexam-copyexam;
+    
+   classes = c(2);",
+  
+  ANALYSIS = 
+   "estimator = mlr; 
+    type = mixture;
+    starts = 200 100; 
+    processors = 10;
+    stseed = 5212020;",
+  
+  SAVEDATA = 
+   "File=savedata.dat;
+    Save=cprob;
+    
+    !!!!!!!! Code to save response frequency data !!!!!!!!
+    
+    response is resp_patterns.dat; 
+    
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",
+  
+  OUTPUT = "residual patterns tech10 tech11 tech14",
+  
+  usevariables = colnames(df_cheat),
+  rdata = df_cheat)
+
+patterns_fit <- mplusModeler(patterns,
+                dataout=here("mplus_enum", "cheat.dat"),
+                modelout=here("mplus_enum", "patterns.inp") ,
+                check=TRUE, run = TRUE, hashfilename = FALSE)
+```
+
+Note: You may see an error that says `<simpleError in bivarFitData[mPos, ] <- c(vars, values): number of items to replace is not a multiple of replacement length>`, the developers are aware of this and are working to fix it (it does not affect this lab).
+
+
+------------------------------------------------------------------------
+
+#### Response Patterns Table 
+
+Read in observed response pattern data and relabel the columns
+
+```{r}
+# Read in response frequency data that we just created:
+patterns <- read_table(here("mplus_enum", "resp_patterns.dat"),
+                        col_names=FALSE, na = "*") 
+
+# Extract the column names
+names <- names(readModels(here("mplus_enum", "patterns.out"))[['savedata']])
+
+# Add the names back to the dataset
+colnames(patterns) <- c("Frequency", names)  
+```
+
+
+Create a table with the top 5 unconditional response pattern, then top of conditional response pattern for each modal class assignment
+
+```{r,eval=TRUE}
+# Order responses by highest frequency
+order_highest <- patterns %>% 
+  arrange(desc(Frequency)) 
+
+# Loop `patterns` data to list top 5 conditional response patterns for each class
+loop_cond  <- lapply(1:max(patterns$C), function(k) {       
+order_cond <- patterns %>%                    
+  filter(C == k) %>%                    
+  arrange(desc(Frequency)) %>%                
+  head(5)                                     
+  })                                          
+
+# Convert loop into data frame
+table_data <- as.data.frame(bind_rows(loop_cond))
+
+# Combine unconditional and conditional responses patterns
+response_patterns <-  rbind(order_highest[1:5,], table_data) 
+```
+
+
+Finally, use `{gt}` to make a nicely formatted table
+
+```{r}
+response_patterns %>% 
+  gt() %>%
+    tab_header(
+    title = "Observed Response Patterns",
+    subtitle = html("Response patterns, estimated frequencies, estimated posterior class probabilities and modal assignments")) %>% 
+    tab_source_note(
+    source_note = md("Data Source: **Undergraduate Cheating Behavior**")) %>%
+    cols_label(
+      Frequency = html("<i>f</i><sub>r</sub>"),
+    LIEEXAM = "LieExam",
+    LIEPAPER = "LiePaper",
+    FRAUD = "Fraud",
+    COPYEXAM = "CopyExam",
+    CPROB1 = html("P<sub><i>k</i></sub>=1"),
+    CPROB2 = html("P<sub><i>k</i></sub>=2"),
+    C = md("*k*")) %>% 
+  tab_row_group(
+    label = "Unconditional response patterns",
+    rows = 1:5) %>%
+  tab_row_group(
+    label = md("*k* = 1 Conditional response patterns"),
+    rows = 6:9) %>%
+  tab_row_group(
+    label = md("*k* = 2 Conditional response patterns"),
+    rows = 10:14)  %>%
+    row_group_order(
+      groups = c("Unconditional response patterns",
+                 md("*k* = 1 Conditional response patterns"),
+                 md("*k* = 2 Conditional response patterns"))) %>% 
+    tab_footnote(
+    footnote = html(
+      "<i>Note.</i> <i>f</i><sub>r</sub> = response pattern frequency; P<sub><i>k</i></sub> = posterior class probabilities"
+    )
+  ) %>% 
+  cols_align(align = "center") %>% 
+  opt_align_table_header(align = "left") %>% 
+  gt::tab_options(table.font.names = "Times New Roman")
+```
+
+------------------------------------------------------------------------
+
+### Exploring Classification Diagnositics
+
+Use Mplus to calculate k-class confidence intervals:
+
+```{r}
+classification  <- mplusObject(
+  
+  TITLE = "C2 LCA - Calculated k-Class 95% CI",
+  
+  VARIABLE =
+    "categorical = lieexam-copyexam;
+   usevar =  lieexam-copyexam;
+   classes = c(2);",
+  
+  ANALYSIS =
+    "estimator = ml;
+    type = mixture;
+    starts = 200 100; 
+    processors = 10;
+    stseed = 5212020;
+    bootstrap = 1000;",
+  
+  MODEL =
+    "%OVERALL%
+     [C#1](c1);
+
+  Model Constraint:
+  New(p1 p2);
+
+  p1 = exp(c1)/(1+exp(c1));
+  p2 = 1/(1+exp(c1));",
+  
+  
+  OUTPUT = "sampstat tech11 tech14 cinterval(bcbootstrap)",
+  
+  usevariables = colnames(df_cheat),
+  rdata = df_cheat)
+
+classification_fit <- mplusModeler(classification,
+                dataout=here("mplus_enum", "cheat.dat"),
+                modelout=here("mplus_enum", "class.inp") ,
+                check=TRUE, run = TRUE, hashfilename = FALSE)
+```
+
+
+------------------------------------------------------------------------
+
+#### Classification Diagnostics Table 
+
+Read in the 2-class model:
+
+```{r}
+# Read in the 2-class model and extract information needed
+output_cheat <- readModels(here("mplus_enum", "class.out"))
+
+# Entropy
+entropy <- tibble(entropy = output_cheat$summaries$Entropy)
+
+# 95% k-Class and k-class 95% Confidence Intervals
+k_ci <- output_cheat$parameters$ci.unstandardized %>% 
+  filter(paramHeader == "New.Additional.Parameters") %>% 
+  unite(CI, c(low2.5,up2.5), sep=", ", remove = TRUE) %>% 
+  mutate(CI = paste0("[", CI, "]")) %>% 
+  rename(kclass=est) %>% 
+  dplyr::select(kclass, CI)
+
+# AvePPk = Average Latent Class Probabilities for Most Likely Latent Class Membership (Row) by Latent Class (Column)
+avePPk <- tibble(avePPk = diag(output_cheat$class_counts$avgProbs.mostLikely))
+
+# mcaPk = modal class assignment proportion 
+mcaPk <- round(output_cheat$class_counts$mostLikely,3) %>% 
+  mutate(model = paste0("Class ", class)) %>% 
+  add_column(avePPk, k_ci) %>% 
+  rename(mcaPk = proportion) %>% 
+  dplyr::select(model, kclass, CI, mcaPk, avePPk)
+
+# OCCk = odds of correct classification
+OCCk <- mcaPk %>% 
+  mutate(OCCk = round(avePPk/(1-avePPk)/(kclass/(1-kclass)),3))
+
+# Put everything together
+class_table <- data.frame(OCCk, entropy)
+```
+
+
+Now, use `{gt}` to make a nicely formatted table
+
+```{r}
+class_table %>% 
+  gt() %>%
+    tab_header(
+    title = "Model Classification Diagnostics for the 2-Class Solution") %>%
+    cols_label(
+      model = md("*k*-Class"),
+      kclass = md("*k*-Class Proportions"),
+      CI = "95% CI",
+      mcaPk = md("*mcaPk*"),
+      avePPk = md("*AvePPk*"),
+      OCCk = md("*OCCk*"),
+      entropy = "Entropy") %>% 
+    tab_footnote(
+    footnote = html(
+      "<i>Note.</i> <i>f</i><sub>r</sub> = response pattern frequency; P<sub><i>k</i></sub> = posterior class probabilities"
+    )
+  ) %>% 
+  cols_align(align = "center") %>% 
+  opt_align_table_header(align = "left") %>% 
+  gt::tab_options(table.font.names = "Times New Roman")
+```
+
+
+------------------------------------------------------------------------
+
+## References
+
+Drew A. Linzer, Jeffrey B. Lewis (2011).
+poLCA: An R Package for Polytomous Variable Latent Class Analysis.
+Journal of Statistical Software, 42(10), 1-29.
+URL <http://www.jstatsoft.org/v42/i10/>.
+
+Hallquist, M. N., & Wiley, J. F.
+(2018).
+MplusAutomation: An R Package for Facilitating Large-Scale Latent Variable Analyses in Mplus.
+Structural equation modeling: a multidisciplinary journal, 25(4), 621-638.
+
+Muthén, B. O., Muthén, L. K., & Asparouhov, T.
+(2017).
+Regression and mediation analysis using Mplus.
+Los Angeles, CA: Muthén & Muthén.
+
+Muthén, L.K.
+and Muthén, B.O.
+(1998-2017).
+Mplus User's Guide.
+Eighth Edition.
+Los Angeles, CA: Muthén & Muthén
+
+R Core Team (2017).
+R: A language and environment for statistical computing.
+R Foundation for Statistical Computing, Vienna, Austria.
+URL <http://www.R-project.org/>
+
+Wickham et al., (2019).
+Welcome to the tidyverse.
+Journal of Open Source Software, 4(43), 1686, <https://doi.org/10.21105/joss.01686>
+
+------------------------------------------------------------------------
+
+![](figures/UCSB_Navy_mark.png){width="75%"}

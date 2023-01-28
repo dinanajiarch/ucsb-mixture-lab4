@@ -1,0 +1,29 @@
+TITLE:
+C2 LCA - Calculated k-Class 95% CI
+DATA:
+FILE = "C:/Users/Dina Arch/Box/TA - ED 201/Labs/ucsb-mixture-lab4/mplus_enum/cheat.dat";
+ 
+VARIABLE:
+NAMES = lieexam liepaper fraud copyexam; 
+ MISSING=.;
+ categorical = lieexam-copyexam;
+   usevar =  lieexam-copyexam;
+   classes = c(2);
+ANALYSIS:
+estimator = ml;
+    type = mixture;
+    starts = 200 100; 
+    processors = 10;
+    stseed = 5212020;
+    bootstrap = 1000;
+MODEL:
+%OVERALL%
+     [C#1](c1);
+
+  Model Constraint:
+  New(p1 p2);
+
+  p1 = exp(c1)/(1+exp(c1));
+  p2 = 1/(1+exp(c1));
+OUTPUT:
+sampstat tech11 tech14 cinterval(bcbootstrap)
