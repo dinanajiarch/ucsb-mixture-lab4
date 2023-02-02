@@ -33,9 +33,7 @@ library(MplusAutomation)
 library(here)
 library(janitor)
 library(gt)
-library(cowplot)
 library(poLCA)
-library(boot)
 here::i_am("response_patterns.Rmd")
 ```
 
@@ -97,34 +95,6 @@ df_cheat <-  cheating %>%
 
 ------------------------------------------------------------------------
 
-### Descriptive Statistics
-
-```{r}
-ds <- df_cheat %>% 
-  pivot_longer(lieexam:copyexam, names_to = "variable") %>% 
-  group_by(variable) %>% 
-  summarise(prop = sum(value)/n(),
-            n = n()) %>%
-  arrange(desc(prop))
-
-ds %>% 
-  gt () %>% 
-  tab_header(title = md("**Descriptive Summary**")) %>%
-  cols_label(
-    variable = "Variable",
-    n = md("*N*"),
-    prop = md("Proportion Endorsed")
-  ) %>%
-  fmt_number(c(2),
-             decimals = 2) %>% 
-  cols_align(
-    align = "center",
-    columns = prop
-  ) 
-```
-
-------------------------------------------------------------------------
-
 ### Exploring Observed Response Patterns
 
 Save response frequencies for the 2-class model from the previous lab with `response is _____.dat` under `SAVEDATA.`
@@ -152,11 +122,9 @@ patterns  <- mplusObject(
    "File=savedata.dat;
     Save=cprob;
     
-    !!!!!!!! Code to save response frequency data !!!!!!!!
+    ! Code to save response frequency data 
     
-    response is resp_patterns.dat; 
-    
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",
+    response is resp_patterns.dat;",
   
   OUTPUT = "residual patterns tech10 tech11 tech14",
   
@@ -171,10 +139,9 @@ patterns_fit <- mplusModeler(patterns,
 
 Note: You may see an error that says `<simpleError in bivarFitData[mPos, ] <- c(vars, values): number of items to replace is not a multiple of replacement length>`, the developers are aware of this and are working to fix it (it does not affect this lab).
 
-
 ------------------------------------------------------------------------
 
-#### Response Patterns Table 
+#### Response Patterns Table
 
 Read in observed response pattern data and relabel the columns
 
@@ -189,7 +156,6 @@ names <- names(readModels(here("mplus_enum", "patterns.out"))[['savedata']])
 # Add the names back to the dataset
 colnames(patterns) <- c("Frequency", names)  
 ```
-
 
 Create a table with the top 5 unconditional response pattern, then top of conditional response pattern for each modal class assignment
 
@@ -212,7 +178,6 @@ table_data <- as.data.frame(bind_rows(loop_cond))
 # Combine unconditional and conditional responses patterns
 response_patterns <-  rbind(order_highest[1:5,], table_data) 
 ```
-
 
 Finally, use `{gt}` to make a nicely formatted table
 
@@ -260,7 +225,7 @@ response_patterns %>%
 
 ### Exploring Classification Diagnositics
 
-Use Mplus to calculate k-class confidence intervals:
+Use Mplus to calculate k-class confidence intervals (Note: Change the synax to make your chosen *k*-class model):
 
 ```{r}
 classification  <- mplusObject(
@@ -270,7 +235,7 @@ classification  <- mplusObject(
   VARIABLE =
     "categorical = lieexam-copyexam;
    usevar =  lieexam-copyexam;
-   classes = c(2);",
+   classes = c(2);", 
   
   ANALYSIS =
     "estimator = ml;
@@ -281,15 +246,18 @@ classification  <- mplusObject(
     bootstrap = 1000;",
   
   MODEL =
-    "%OVERALL%
-     [C#1](c1);
+    "
+  !CHANGE THIS SECTION TO YOUR CHOSEN k-CLASS MODEL
+    
+  %OVERALL%
+  [C#1](c1);
 
   Model Constraint:
   New(p1 p2);
-
+  
   p1 = exp(c1)/(1+exp(c1));
   p2 = 1/(1+exp(c1));",
-  
+
   
   OUTPUT = "sampstat tech11 tech14 cinterval(bcbootstrap)",
   
@@ -302,10 +270,9 @@ classification_fit <- mplusModeler(classification,
                 check=TRUE, run = TRUE, hashfilename = FALSE)
 ```
 
-
 ------------------------------------------------------------------------
 
-#### Classification Diagnostics Table 
+#### Classification Diagnostics Table
 
 Read in the 2-class model:
 
@@ -314,7 +281,7 @@ Read in the 2-class model:
 output_cheat <- readModels(here("mplus_enum", "class.out"))
 
 # Entropy
-entropy <- tibble(entropy = output_cheat$summaries$Entropy)
+entropy <- c(output_cheat$summaries$Entropy, rep(NA, output_cheat$summaries$NLatentClasses-1))
 
 # 95% k-Class and k-class 95% Confidence Intervals
 k_ci <- output_cheat$parameters$ci.unstandardized %>% 
@@ -342,7 +309,6 @@ OCCk <- mcaPk %>%
 class_table <- data.frame(OCCk, entropy)
 ```
 
-
 Now, use `{gt}` to make a nicely formatted table
 
 ```{r}
@@ -358,6 +324,8 @@ class_table %>%
       avePPk = md("*AvePPk*"),
       OCCk = md("*OCCk*"),
       entropy = "Entropy") %>% 
+    sub_missing(7,
+              missing_text = "") %>%
     tab_footnote(
     footnote = html(
       "<i>Note.</i> <i>f</i><sub>r</sub> = response pattern frequency; P<sub><i>k</i></sub> = posterior class probabilities"
@@ -367,7 +335,6 @@ class_table %>%
   opt_align_table_header(align = "left") %>% 
   gt::tab_options(table.font.names = "Times New Roman")
 ```
-
 
 ------------------------------------------------------------------------
 
