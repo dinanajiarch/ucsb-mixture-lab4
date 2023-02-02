@@ -99,7 +99,7 @@ df_cheat <-  cheating %>%
 
 Save response frequencies for the 2-class model from the previous lab with `response is _____.dat` under `SAVEDATA.`
 
-```{r, eval=FALSE}
+```{r}
 
 patterns  <- mplusObject(
   
