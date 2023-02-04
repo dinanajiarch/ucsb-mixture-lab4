@@ -303,7 +303,7 @@ mcaPk <- round(output_cheat$class_counts$mostLikely,3) %>%
 
 # OCCk = odds of correct classification
 OCCk <- mcaPk %>% 
-  mutate(OCCk = round(avePPk/(1-avePPk)/(kclass/(1-kclass)),3))
+  mutate(OCCk = round((avePPk/(1-avePPk))/(kclass/(1-kclass)),3))
 
 # Put everything together
 class_table <- data.frame(OCCk, entropy)
