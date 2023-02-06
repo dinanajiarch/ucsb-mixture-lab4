@@ -116,7 +116,7 @@ patterns  <- mplusObject(
     type = mixture;
     starts = 200 100; 
     processors = 10;
-    stseed = 5212020;",
+    stseed = 887676;",
   
   SAVEDATA = 
    "File=savedata.dat;
@@ -242,7 +242,7 @@ classification  <- mplusObject(
     type = mixture;
     starts = 200 100; 
     processors = 10;
-    stseed = 5212020;
+    stseed = 887676;
     bootstrap = 1000;",
   
   MODEL =

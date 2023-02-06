@@ -1,0 +1,782 @@
+Mplus VERSION 8.8
+MUTHEN & MUTHEN
+02/06/2023   3:55 PM
+
+INPUT INSTRUCTIONS
+
+  TITLE:
+  C2 LCA - Save response patterns
+  DATA:
+  FILE = "C:/Users/Dina Arch/Box/TA - ED 201/Labs/ucsb-mixture-lab4/mplus_enum/cheat.dat";
+
+  VARIABLE:
+  NAMES = lieexam liepaper fraud copyexam;
+   MISSING=.;
+   categorical = lieexam-copyexam;
+     usevar =  lieexam-copyexam;
+
+     classes = c(2);
+  ANALYSIS:
+  estimator = mlr;
+      type = mixture;
+      starts = 200 100;
+      processors = 10;
+      stseed = 887676;
+  OUTPUT:
+  residual patterns tech10 tech11 tech14
+  SAVEDATA:
+  File=savedata.dat;
+      Save=cprob;
+
+      ! Code to save response frequency data
+
+      response is resp_patterns.dat;
+
+
+
+INPUT READING TERMINATED NORMALLY
+
+
+
+
+C2 LCA - Save response patterns
+
+SUMMARY OF ANALYSIS
+
+Number of groups                                                 1
+Number of observations                                         319
+
+Number of dependent variables                                    4
+Number of independent variables                                  0
+Number of continuous latent variables                            0
+Number of categorical latent variables                           1
+
+Observed dependent variables
+
+  Binary and ordered categorical (ordinal)
+   LIEEXAM     LIEPAPER    FRAUD       COPYEXAM
+
+Categorical latent variables
+   C
+
+
+Estimator                                                      MLR
+Information matrix                                        OBSERVED
+Optimization Specifications for the Quasi-Newton Algorithm for
+Continuous Outcomes
+  Maximum number of iterations                                 100
+  Convergence criterion                                  0.100D-05
+Optimization Specifications for the EM Algorithm
+  Maximum number of iterations                                 500
+  Convergence criteria
+    Loglikelihood change                                 0.100D-06
+    Relative loglikelihood change                        0.100D-06
+    Derivative                                           0.100D-05
+Optimization Specifications for the M step of the EM Algorithm for
+Categorical Latent variables
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-05
+  Basis for M step termination                           ITERATION
+Optimization Specifications for the M step of the EM Algorithm for
+Censored, Binary or Ordered Categorical (Ordinal), Unordered
+Categorical (Nominal) and Count Outcomes
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-05
+  Basis for M step termination                           ITERATION
+  Maximum value for logit thresholds                            15
+  Minimum value for logit thresholds                           -15
+  Minimum expected cell size for chi-square              0.100D-01
+Maximum number of iterations for H1                           2000
+Convergence criterion for H1                             0.100D-03
+Optimization algorithm                                         EMA
+Random Starts Specifications
+  Number of initial stage random starts                        200
+  Number of final stage optimizations                          100
+  Number of initial stage iterations                            10
+  Initial stage convergence criterion                    0.100D+01
+  Random starts scale                                    0.500D+01
+  Random seed for generating random starts                  887676
+Link                                                         LOGIT
+
+Input data file(s)
+  C:/Users/Dina Arch/Box/TA - ED 201/Labs/ucsb-mixture-lab4/mplus_enum/cheat.dat
+Input data format  FREE
+
+
+SUMMARY OF DATA
+
+     Number of missing data patterns             1
+     Number of y missing data patterns           0
+     Number of u missing data patterns           1
+
+
+SUMMARY OF MISSING DATA PATTERNS
+
+
+COVARIANCE COVERAGE OF DATA
+
+Minimum covariance coverage value   0.100
+
+
+UNIVARIATE PROPORTIONS AND COUNTS FOR CATEGORICAL VARIABLES
+
+    LIEEXAM
+      Category 1    0.893          285.000
+      Category 2    0.107           34.000
+    LIEPAPER
+      Category 1    0.881          281.000
+      Category 2    0.119           38.000
+    FRAUD
+      Category 1    0.934          298.000
+      Category 2    0.066           21.000
+    COPYEXAM
+      Category 1    0.787          251.000
+      Category 2    0.213           68.000
+
+
+RANDOM STARTS RESULTS RANKED FROM THE BEST TO THE WORST LOGLIKELIHOOD VALUES
+
+Final stage loglikelihood values at local maxima, seeds, and initial stage start numbers:
+
+            -440.027  766651           180
+            -440.027  403221           69
+            -440.027  999066           124
+            -440.027  542970           104
+            -440.027  699537           23
+            -440.027  332150           72
+            -440.027  35606            61
+            -440.027  986385           175
+            -440.027  587695           66
+            -440.027  38015            40
+            -440.027  435741           142
+            -440.027  548334           179
+            -440.027  574496           38
+            -440.027  254453           170
+            -440.027  786648           189
+            -440.027  562296           9
+            -440.027  450422           75
+            -440.027  550886           194
+            -440.027  395016           131
+            -440.027  619370           59
+            -440.027  143052           191
+            -440.027  781133           154
+            -440.027  221749           90
+            -440.027  493704           165
+            -440.027  122085           80
+            -440.027  620867           51
+            -440.027  670616           101
+            -440.027  907547           193
+            -440.027  69107            199
+            -440.027  635916           29
+            -440.027  321046           17
+            -440.027  96764            127
+            -440.027  406058           96
+            -440.027  44340            55
+            -440.027  892787           178
+            -440.027  443762           44
+            -440.027  82746            145
+            -440.027  888491           139
+            -440.027  532067           33
+            -440.027  268896           4
+            -440.027  583504           18
+            -440.027  207770           82
+            -440.027  608124           119
+            -440.027  390294           39
+            -440.027  271184           137
+            -440.027  474909           146
+            -440.027  977273           117
+            -440.027  667872           123
+            -440.027  66757            67
+            -440.027  221409           50
+            -440.027  668357           30
+            -440.027  202289           91
+            -440.027  665244           3
+            -440.027  756451           198
+            -440.027  689880           56
+            -440.027  764126           10
+            -440.027  912566           87
+            -440.027  445412           65
+            -440.027  876345           115
+            -440.027  472212           11
+            -440.027  167048           166
+            -440.027  534590           157
+            -440.027  191541           94
+            -440.027  953977           161
+            -440.027  917351           133
+            -440.027  195759           37
+            -440.027  408197           93
+            -440.027  250215           183
+            -440.027  408054           182
+            -440.027  679994           73
+            -440.027  671930           148
+            -440.027  641861           134
+            -440.027  273066           160
+            -440.027  986119           156
+            -440.027  302911           16
+            -440.027  690500           105
+            -440.027  979797           88
+            -440.027  136844           102
+            -440.027  190167           184
+            -440.027  988420           1
+            -440.027  40600            78
+            -440.027  78052            49
+            -440.027  456986           98
+            -440.027  314634           122
+            -440.027  653669           129
+            -440.027  23351            116
+            -440.027  887769           57
+            -440.027  693798           144
+            -440.027  162016           113
+            -440.027  211657           81
+            -440.027  356422           12
+            -440.027  124479           173
+
+8 perturbed starting value run(s) did not converge or were rejected in the third stage.
+
+
+
+THE BEST LOGLIKELIHOOD VALUE HAS BEEN REPLICATED.  RERUN WITH AT LEAST TWICE THE
+RANDOM STARTS TO CHECK THAT THE BEST LOGLIKELIHOOD IS STILL OBTAINED AND REPLICATED.
+
+
+THE MODEL ESTIMATION TERMINATED NORMALLY
+
+
+
+MODEL FIT INFORMATION
+
+Number of Free Parameters                        9
+
+Loglikelihood
+
+          H0 Value                        -440.027
+          H0 Scaling Correction Factor      1.0113
+            for MLR
+
+Information Criteria
+
+          Akaike (AIC)                     898.054
+          Bayesian (BIC)                   931.941
+          Sample-Size Adjusted BIC         903.395
+            (n* = (n + 2) / 24)
+
+Chi-Square Test of Model Fit for the Binary and Ordered Categorical
+(Ordinal) Outcomes
+
+          Pearson Chi-Square
+
+          Value                              8.323
+          Degrees of Freedom                     6
+          P-Value                           0.2154
+
+          Likelihood Ratio Chi-Square
+
+          Value                              7.764
+          Degrees of Freedom                     6
+          P-Value                           0.2559
+
+
+
+FINAL CLASS COUNTS AND PROPORTIONS FOR THE LATENT CLASSES
+BASED ON THE ESTIMATED MODEL
+
+    Latent
+   Classes
+
+       1         51.22082          0.16057
+       2        267.77918          0.83943
+
+
+FINAL CLASS COUNTS AND PROPORTIONS FOR THE LATENT CLASSES
+BASED ON ESTIMATED POSTERIOR PROBABILITIES
+
+    Latent
+   Classes
+
+       1         51.22082          0.16057
+       2        267.77918          0.83943
+
+
+FINAL CLASS COUNTS AND PROPORTIONS FOR THE LATENT CLASSES
+BASED ON THEIR MOST LIKELY LATENT CLASS MEMBERSHIP
+
+Class Counts and Proportions
+
+    Latent
+   Classes
+
+       1               54          0.16928
+       2              265          0.83072
+
+
+CLASSIFICATION QUALITY
+
+     Entropy                         0.737
+
+
+Average Latent Class Probabilities for Most Likely Latent Class Membership (Row)
+by Latent Class (Column)
+
+           1        2
+
+    1   0.775    0.225
+    2   0.035    0.965
+
+
+Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+           1        2
+
+    1   0.818    0.182
+    2   0.045    0.955
+
+
+Logits for the Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+              1        2
+
+    1      1.500    0.000
+    2     -3.049    0.000
+
+
+MODEL RESULTS
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+Latent Class 1
+
+ Thresholds
+    LIEEXAM$1         -0.310      0.713     -0.435      0.664
+    LIEPAPER$1        -0.360      0.696     -0.518      0.605
+    FRAUD$1            1.289      0.531      2.425      0.015
+    COPYEXAM$1         0.505      0.465      1.085      0.278
+
+Latent Class 2
+
+ Thresholds
+    LIEEXAM$1          4.081      1.738      2.347      0.019
+    LIEPAPER$1         3.503      1.058      3.311      0.001
+    FRAUD$1            3.256      0.433      7.514      0.000
+    COPYEXAM$1         1.503      0.179      8.416      0.000
+
+Categorical Latent Variables
+
+ Means
+    C#1               -1.654      0.565     -2.926      0.003
+
+
+QUALITY OF NUMERICAL RESULTS
+
+     Condition Number for the Information Matrix              0.607E-02
+       (ratio of smallest to largest eigenvalue)
+
+
+RESULTS IN PROBABILITY SCALE
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+Latent Class 1
+
+ LIEEXAM
+    Category 1         0.423      0.174      2.431      0.015
+    Category 2         0.577      0.174      3.315      0.001
+ LIEPAPER
+    Category 1         0.411      0.168      2.441      0.015
+    Category 2         0.589      0.168      3.499      0.000
+ FRAUD
+    Category 1         0.784      0.090      8.709      0.000
+    Category 2         0.216      0.090      2.400      0.016
+ COPYEXAM
+    Category 1         0.624      0.109      5.710      0.000
+    Category 2         0.376      0.109      3.446      0.001
+
+Latent Class 2
+
+ LIEEXAM
+    Category 1         0.983      0.028     34.624      0.000
+    Category 2         0.017      0.028      0.585      0.559
+ LIEPAPER
+    Category 1         0.971      0.030     32.341      0.000
+    Category 2         0.029      0.030      0.974      0.330
+ FRAUD
+    Category 1         0.963      0.015     62.196      0.000
+    Category 2         0.037      0.015      2.396      0.017
+ COPYEXAM
+    Category 1         0.818      0.027     30.769      0.000
+    Category 2         0.182      0.027      6.844      0.000
+
+
+LATENT CLASS INDICATOR ODDS RATIOS FOR THE LATENT CLASSES
+
+                                                95% C.I.
+                    Estimate       S.E.  Lower 2.5% Upper 2.5%
+
+Latent Class 1 Compared to Latent Class 2
+
+ LIEEXAM
+    Category > 1      80.717    130.685      3.379   1928.110
+ LIEPAPER
+    Category > 1      47.616     49.118      6.305    359.599
+ FRAUD
+    Category > 1       7.153      5.068      1.784     28.677
+ COPYEXAM
+    Category > 1       2.713      1.403      0.985      7.476
+
+
+RESIDUAL OUTPUT
+
+
+     RESIDUAL OUTPUT IS NOT AVAILABLE FOR THIS MODEL.  ADDITIONAL OUTPUT FOR
+     CATEGORICAL, COUNT, AND NOMINAL VARIABLES MAY BE AVAILABLE USING TECH10.
+
+
+TECHNICAL 10 OUTPUT
+
+
+     MODEL FIT INFORMATION FOR THE LATENT CLASS INDICATOR MODEL PART
+
+
+     RESPONSE PATTERNS
+
+     No.  Pattern    No.  Pattern    No.  Pattern    No.  Pattern
+       1  0000         2  0001         3  0010         4  0011
+       5  0100         6  0101         7  0110         8  0111
+       9  1000        10  1001        11  1010        12  1011
+      13  1100        14  1101        15  1110        16  1111
+
+
+
+     RESPONSE PATTERN FREQUENCIES AND CHI-SQUARE CONTRIBUTIONS
+
+    Response          Frequency     Standardized  Chi-square Contribution
+     Pattern    Observed  Estimated   Residual    Pearson   Loglikelihood  Deleted
+                                     (z-score)
+         1       207.00     205.72       0.15       0.01         2.57
+         2        46.00      47.41      -0.22       0.04        -2.79
+         3         7.00       8.96      -0.66       0.43        -3.45
+         4         5.00       2.45       1.64       2.66         7.14
+         5        13.00      12.30       0.20       0.04         1.43
+         6         4.00       5.11      -0.50       0.24        -1.97
+         7         1.00       1.95      -0.68       0.47        -1.34
+         8         2.00       1.09       0.87       0.76         2.43
+         9        10.00       9.34       0.22       0.05         1.37
+        10         3.00       4.34      -0.65       0.41        -2.21
+        11         1.00       1.77      -0.58       0.33        -1.14
+        12         2.00       1.02       0.98       0.95         2.71
+        13        11.00       8.61       0.82       0.66         5.38
+        14         4.00       5.16      -0.51       0.26        -2.04
+        15         1.00       2.35      -0.88       0.78        -1.71
+        16         2.00       1.42       0.49       0.24         1.38
+
+     THE TOTAL PEARSON CHI-SQUARE CONTRIBUTION FROM EMPTY CELLS IS         0.00
+
+
+     UNIVARIATE MODEL FIT INFORMATION
+
+                               Estimated Probabilities
+                                                  Standardized
+     Variable              H1           H0          Residual
+                                                   (z-score)
+     LIEEXAM
+       Category 1        0.893        0.893           0.000
+       Category 2        0.107        0.107           0.000
+       Univariate Pearson Chi-Square                  0.000
+       Univariate Log-Likelihood Chi-Square           0.000
+       Number of Significant Standardized Residuals   0
+     LIEPAPER
+       Category 1        0.881        0.881           0.000
+       Category 2        0.119        0.119           0.000
+       Univariate Pearson Chi-Square                  0.000
+       Univariate Log-Likelihood Chi-Square           0.000
+       Number of Significant Standardized Residuals   0
+     FRAUD
+       Category 1        0.934        0.934           0.000
+       Category 2        0.066        0.066           0.000
+       Univariate Pearson Chi-Square                  0.000
+       Univariate Log-Likelihood Chi-Square           0.000
+       Number of Significant Standardized Residuals   0
+     COPYEXAM
+       Category 1        0.787        0.787           0.000
+       Category 2        0.213        0.213           0.000
+       Univariate Pearson Chi-Square                  0.000
+       Univariate Log-Likelihood Chi-Square           0.000
+       Number of Significant Standardized Residuals   0
+
+       Overall Univariate Pearson Chi-Square                         0.000
+       Overall Univariate Log-Likelihood Chi-Square                  0.000
+       Overall Number of Significant Standardized Residuals          0
+
+
+     BIVARIATE MODEL FIT INFORMATION
+
+                                              Estimated Probabilities
+                                                                 Standardized
+     Variable       Variable              H1           H0          Residual
+                                                                  (z-score)
+     LIEEXAM        LIEPAPER
+       Category 1     Category 1        0.831        0.829           0.069
+       Category 1     Category 2        0.063        0.064          -0.106
+       Category 2     Category 1        0.050        0.052          -0.117
+       Category 2     Category 2        0.056        0.055           0.113
+       Bivariate Pearson Chi-Square                                  0.036
+       Bivariate Log-Likelihood Chi-Square                           0.036
+       Number of Significant Standardized Residuals                  0
+     LIEEXAM        FRAUD
+       Category 1     Category 1        0.846        0.848          -0.086
+       Category 1     Category 2        0.047        0.045           0.148
+       Category 2     Category 1        0.088        0.086           0.110
+       Category 2     Category 2        0.019        0.021          -0.217
+       Bivariate Pearson Chi-Square                                  0.079
+       Bivariate Log-Likelihood Chi-Square                           0.080
+       Number of Significant Standardized Residuals                  0
+     LIEEXAM        COPYEXAM
+       Category 1     Category 1        0.715        0.718          -0.116
+       Category 1     Category 2        0.179        0.176           0.137
+       Category 2     Category 1        0.072        0.069           0.205
+       Category 2     Category 2        0.034        0.037          -0.275
+       Bivariate Pearson Chi-Square                                  0.131
+       Bivariate Log-Likelihood Chi-Square                           0.133
+       Number of Significant Standardized Residuals                  0
+     LIEPAPER       FRAUD
+       Category 1     Category 1        0.834        0.836          -0.122
+       Category 1     Category 2        0.047        0.044           0.220
+       Category 2     Category 1        0.100        0.098           0.153
+       Category 2     Category 2        0.019        0.021          -0.313
+       Bivariate Pearson Chi-Square                                  0.166
+       Bivariate Log-Likelihood Chi-Square                           0.169
+       Number of Significant Standardized Residuals                  0
+     LIEPAPER       COPYEXAM
+       Category 1     Category 1        0.705        0.708          -0.096
+       Category 1     Category 2        0.176        0.173           0.115
+       Category 2     Category 1        0.082        0.079           0.162
+       Category 2     Category 2        0.038        0.040          -0.223
+       Bivariate Pearson Chi-Square                                  0.085
+       Bivariate Log-Likelihood Chi-Square                           0.086
+       Number of Significant Standardized Residuals                  0
+     FRAUD          COPYEXAM
+       Category 1     Category 1        0.755        0.740           0.642
+       Category 1     Category 2        0.179        0.194          -0.711
+       Category 2     Category 1        0.031        0.047          -1.329
+       Category 2     Category 2        0.034        0.019           2.077
+       Bivariate Pearson Chi-Square                                  6.429
+       Bivariate Log-Likelihood Chi-Square                           5.816
+       Number of Significant Standardized Residuals                  1
+
+       Overall Bivariate Pearson Chi-Square                          6.927
+       Overall Bivariate Log-Likelihood Chi-Square                   6.320
+       Overall Number of Significant Standardized Residuals          1
+
+
+     UNIVARIATE DISTRIBUTION FIT FOR CLASS 1
+
+     Variable          Observed      Estimated      Residual (Obs.-Est.)    Stand. Residual
+     LIEEXAM
+       Category 1        0.423          0.423                  0.000                0.000
+       Category 2        0.577          0.577                  0.000                0.000
+     LIEPAPER
+       Category 1        0.411          0.411                  0.000                0.000
+       Category 2        0.589          0.589                  0.000                0.000
+     FRAUD
+       Category 1        0.784          0.784                  0.000                0.000
+       Category 2        0.216          0.216                  0.000                0.000
+     COPYEXAM
+       Category 1        0.624          0.624                  0.000                0.000
+       Category 2        0.376          0.376                  0.000                0.000
+
+
+     BIVARIATE DISTRIBUTIONS FIT FOR CLASS 1
+
+     Variable       Variable          Observed     Estimated    Residual (Obs.-Est.)  Stand. Residual
+     LIEEXAM        LIEPAPER
+       Category 1     Category 1        0.182       0.174             0.009            0.162
+       Category 1     Category 2        0.241       0.249            -0.009           -0.142
+       Category 2     Category 1        0.228       0.237            -0.009           -0.145
+       Category 2     Category 2        0.348       0.340             0.009            0.130
+     LIEEXAM        FRAUD
+       Category 1     Category 1        0.322       0.332            -0.010           -0.154
+       Category 1     Category 2        0.102       0.091             0.010            0.252
+       Category 2     Category 1        0.462       0.452             0.010            0.146
+       Category 2     Category 2        0.115       0.125            -0.010           -0.219
+     LIEEXAM        COPYEXAM
+       Category 1     Category 1        0.250       0.264            -0.014           -0.229
+       Category 1     Category 2        0.173       0.159             0.014            0.275
+       Category 2     Category 1        0.374       0.360             0.014            0.210
+       Category 2     Category 2        0.203       0.217            -0.014           -0.244
+     LIEPAPER       FRAUD
+       Category 1     Category 1        0.308       0.322            -0.014           -0.220
+       Category 1     Category 2        0.103       0.089             0.014            0.362
+       Category 2     Category 1        0.476       0.462             0.014            0.206
+       Category 2     Category 2        0.113       0.127            -0.014           -0.309
+     LIEPAPER       COPYEXAM
+       Category 1     Category 1        0.246       0.256            -0.010           -0.168
+       Category 1     Category 2        0.165       0.155             0.010            0.203
+       Category 2     Category 1        0.378       0.367             0.010            0.152
+       Category 2     Category 2        0.211       0.222            -0.010           -0.177
+     FRAUD          COPYEXAM
+       Category 1     Category 1        0.551       0.489             0.062            0.883
+       Category 1     Category 2        0.233       0.295            -0.062           -0.968
+       Category 2     Category 1        0.073       0.135            -0.062           -1.293
+       Category 2     Category 2        0.143       0.081             0.062            1.615
+
+
+     UNIVARIATE DISTRIBUTION FIT FOR CLASS 2
+
+     Variable          Observed      Estimated      Residual (Obs.-Est.)    Stand. Residual
+     LIEEXAM
+       Category 1        0.983          0.983                  0.000                0.000
+       Category 2        0.017          0.017                  0.000                0.000
+     LIEPAPER
+       Category 1        0.971          0.971                  0.000                0.000
+       Category 2        0.029          0.029                  0.000                0.000
+     FRAUD
+       Category 1        0.963          0.963                  0.000                0.000
+       Category 2        0.037          0.037                  0.000                0.000
+     COPYEXAM
+       Category 1        0.818          0.818                  0.000                0.000
+       Category 2        0.182          0.182                  0.000                0.000
+
+
+     BIVARIATE DISTRIBUTIONS FIT FOR CLASS 2
+
+     Variable       Variable          Observed     Estimated    Residual (Obs.-Est.)  Stand. Residual
+     LIEEXAM        LIEPAPER
+       Category 1     Category 1        0.955       0.955             0.000            0.006
+       Category 1     Category 2        0.029       0.029             0.000           -0.008
+       Category 2     Category 1        0.016       0.016             0.000           -0.010
+       Category 2     Category 2        0.001       0.000             0.000            0.059
+     LIEEXAM        FRAUD
+       Category 1     Category 1        0.947       0.947             0.000           -0.008
+       Category 1     Category 2        0.037       0.036             0.000            0.010
+       Category 2     Category 1        0.016       0.016             0.000            0.015
+       Category 2     Category 2        0.001       0.001             0.000           -0.075
+     LIEEXAM        COPYEXAM
+       Category 1     Category 1        0.804       0.804            -0.001           -0.032
+       Category 1     Category 2        0.180       0.179             0.001            0.033
+       Category 2     Category 1        0.014       0.014             0.001            0.111
+       Category 2     Category 2        0.002       0.003            -0.001           -0.234
+     LIEPAPER       FRAUD
+       Category 1     Category 1        0.934       0.935             0.000           -0.018
+       Category 1     Category 2        0.036       0.036             0.000            0.024
+       Category 2     Category 1        0.028       0.028             0.000            0.027
+       Category 2     Category 2        0.001       0.001             0.000           -0.135
+     LIEPAPER       COPYEXAM
+       Category 1     Category 1        0.793       0.794            -0.001           -0.039
+       Category 1     Category 2        0.178       0.177             0.001            0.041
+       Category 2     Category 1        0.025       0.024             0.001            0.102
+       Category 2     Category 2        0.004       0.005            -0.001           -0.214
+     FRAUD          COPYEXAM
+       Category 1     Category 1        0.795       0.788             0.007            0.279
+       Category 1     Category 2        0.168       0.175            -0.007           -0.300
+       Category 2     Category 1        0.023       0.030            -0.007           -0.666
+       Category 2     Category 2        0.014       0.007             0.007            1.395
+
+
+TECHNICAL 11 OUTPUT
+
+     Random Starts Specifications for the k-1 Class Analysis Model
+        Number of initial stage random starts                 200
+        Number of final stage optimizations                   100
+
+
+
+     VUONG-LO-MENDELL-RUBIN LIKELIHOOD RATIO TEST FOR 1 (H0) VERSUS 2 CLASSES
+
+          H0 Loglikelihood Value                         -467.438
+          2 Times the Loglikelihood Difference             54.822
+          Difference in the Number of Parameters                5
+          Mean                                              5.308
+          Standard Deviation                                5.063
+          P-Value                                          0.0000
+
+     LO-MENDELL-RUBIN ADJUSTED LRT TEST
+
+          Value                                            52.984
+          P-Value                                          0.0000
+
+
+TECHNICAL 14 OUTPUT
+
+     Random Starts Specifications for the k-1 Class Analysis Model
+        Number of initial stage random starts                 200
+        Number of final stage optimizations                   100
+
+     Random Starts Specification for the k-1 Class Model for Generated Data
+        Number of initial stage random starts                   0
+        Number of final stage optimizations for the
+           initial stage random starts                          0
+     Random Starts Specification for the k Class Model for Generated Data
+        Number of initial stage random starts                  40
+        Number of final stage optimizations                     8
+     Number of bootstrap draws requested                   Varies
+
+
+     PARAMETRIC BOOTSTRAPPED LIKELIHOOD RATIO TEST FOR 1 (H0) VERSUS 2 CLASSES
+
+          H0 Loglikelihood Value                         -467.438
+          2 Times the Loglikelihood Difference             54.822
+          Difference in the Number of Parameters                5
+          Approximate P-Value                              0.0000
+          Successful Bootstrap Draws                           10
+
+
+SAVEDATA INFORMATION
+
+
+  Save file
+    savedata.dat
+
+  Order and format of variables
+
+    LIEEXAM        F10.3
+    LIEPAPER       F10.3
+    FRAUD          F10.3
+    COPYEXAM       F10.3
+    CPROB1         F10.3
+    CPROB2         F10.3
+    C              F10.3
+
+  Save file format
+    7F10.3
+
+  Save file record length    10000
+
+  Save missing symbol        *
+
+
+  Response Patterns
+
+  Save file
+    resp_patterns.dat
+  Save format      Free
+
+  Order of information saved
+
+    Frequency
+    LIEEXAM
+    LIEPAPER
+    FRAUD
+    COPYEXAM
+    CPROB1
+    CPROB2
+    C
+
+     Beginning Time:  15:55:27
+        Ending Time:  15:55:36
+       Elapsed Time:  00:00:09
+
+
+
+MUTHEN & MUTHEN
+3463 Stoner Ave.
+Los Angeles, CA  90066
+
+Tel: (310) 391-9971
+Fax: (310) 391-8971
+Web: www.StatModel.com
+Support: Support@StatModel.com
+
+Copyright (c) 1998-2022 Muthen & Muthen
